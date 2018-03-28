@@ -23,7 +23,7 @@ OUTPUT_PATH = ('%s%soutput%s' % (os.getcwd(), os.sep, os.sep))
 PACKAGE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Actual Image size in pixel is fixed in this version of pagan.
-IMAGE_SIZE = (128, 128)
+IMAGE_SIZE = (32, 32)
 
 # Desired virtual resolution of the image output.
 # Needs to be lesser or equal to the actual image size.
@@ -41,7 +41,7 @@ MAX_X = IMAGE_SIZE[0] - 1
 MAX_Y = IMAGE_SIZE[1] - 1
 
 # Imagemode ist fixed to RGBA for creating PNG-Files.
-IMAGE_MODE = 'RGBA'
+IMAGE_MODE = 'RGB'
 
 # All images are transparent.
 BACKGROUND_COLOR = (0, 0, 0, 0)
@@ -50,11 +50,11 @@ BACKGROUND_COLOR = (0, 0, 0, 0)
 FILE_BODY = ('%s%spgn%sBODY.pgn' % (PACKAGE_DIR, os.sep, os.sep))
 FILE_BOOTS = ('%s%spgn%sBOOTS.pgn' % (PACKAGE_DIR, os.sep, os.sep))
 FILE_SUBFIELD = ('%s%spgn%sSUBFIELD.pgn' % (PACKAGE_DIR, os.sep, os.sep))
-FILE_MIN_SUBFIELD = ('%s%spgn%sMIN_SUBFIELD.pgn' % (PACKAGE_DIR, os.sep, os.sep))
+FILE_MIN_SUBFIELD = ('%s%spgn%sMIN_SUBFIELD.pgn' % (PACKAGE_DIR, os.sep,
+                                                    os.sep))
 FILE_TORSO = ('%s%spgn%sTORSO.pgn' % (PACKAGE_DIR, os.sep, os.sep))
 FILE_HAIR = ('%s%spgn%sHAIR.pgn' % (PACKAGE_DIR, os.sep, os.sep))
 FILE_SHIELD_DECO = ('%s%spgn%sSHIELD_DECO.pgn' % (PACKAGE_DIR, os.sep, os.sep))
-
 
 # Out of the box supported
 # HASH algorithms from pythons hashlib.
@@ -66,9 +66,14 @@ HASH_SHA384 = 4
 HASH_SHA512 = 5
 
 # String representation of the hashes for debugging.
-HASHES = {0 : "MD5", 1 : "SHA1", 2 : "SHA224",
-          3 : "SHA256", 4 : "SHA384", 5 : "SHA512"}
-
+HASHES = {
+    0: "MD5",
+    1: "SHA1",
+    2: "SHA224",
+    3: "SHA256",
+    4: "SHA384",
+    5: "SHA512"
+}
 
 im = Image.new(IMAGE_MODE, IMAGE_SIZE, BACKGROUND_COLOR)
 
@@ -83,7 +88,8 @@ horizontalpixels = []
 pixelmap = []
 
 # Size of a single virtual pixel mapped to the real image size.
-dotsize = (IMAGE_SIZE[0] / VIRTUAL_RESOLUTION[0], IMAGE_SIZE[1] / VIRTUAL_RESOLUTION[1])
+dotsize = (IMAGE_SIZE[0] / VIRTUAL_RESOLUTION[0],
+           IMAGE_SIZE[1] / VIRTUAL_RESOLUTION[1])
 
 
 def hash_input(inpt, algo=HASH_SHA256):
@@ -118,7 +124,8 @@ def create_shield_deco_layer(weapons, ip):
     the shield decal layer.'''
     layer = []
     if weapons[0] in hashgrinder.SHIELDS:
-        layer = pgnreader.parse_pagan_file(FILE_SHIELD_DECO, ip, invert=False, sym=False)
+        layer = pgnreader.parse_pagan_file(
+            FILE_SHIELD_DECO, ip, invert=False, sym=False)
     return layer
 
 
@@ -127,7 +134,8 @@ def create_hair_layer(aspect, ip):
     the hair layer.'''
     layer = []
     if 'HAIR' in aspect:
-        layer = pgnreader.parse_pagan_file(FILE_HAIR, ip, invert=False, sym=True)
+        layer = pgnreader.parse_pagan_file(
+            FILE_HAIR, ip, invert=False, sym=True)
     return layer
 
 
@@ -136,7 +144,8 @@ def create_torso_layer(aspect, ip):
     the torso layer.'''
     layer = []
     if 'TOP' in aspect:
-        layer = pgnreader.parse_pagan_file(FILE_TORSO, ip, invert=False, sym=True)
+        layer = pgnreader.parse_pagan_file(
+            FILE_TORSO, ip, invert=False, sym=True)
     return layer
 
 
@@ -145,9 +154,11 @@ def create_subfield_layer(aspect, ip):
     the subfield layer.'''
     layer = []
     if 'PANTS' in aspect:
-        layer = pgnreader.parse_pagan_file(FILE_SUBFIELD, ip, invert=False, sym=True)
+        layer = pgnreader.parse_pagan_file(
+            FILE_SUBFIELD, ip, invert=False, sym=True)
     else:
-        layer = pgnreader.parse_pagan_file(FILE_MIN_SUBFIELD, ip, invert=False, sym=True)
+        layer = pgnreader.parse_pagan_file(
+            FILE_MIN_SUBFIELD, ip, invert=False, sym=True)
 
     return layer
 
@@ -157,18 +168,27 @@ def create_boots_layer(aspect, ip):
     the boots layer.'''
     layer = []
     if 'BOOTS' in aspect:
-        layer = pgnreader.parse_pagan_file(FILE_BOOTS, ip, invert=False, sym=True)
+        layer = pgnreader.parse_pagan_file(
+            FILE_BOOTS, ip, invert=False, sym=True)
     return layer
 
 
 def create_shield_layer(shield, hashcode):
     """Creates the layer for shields."""
-    return pgnreader.parse_pagan_file(('%s%spgn%s' % (PACKAGE_DIR, os.sep, os.sep)) + shield + '.pgn', hashcode, sym=False, invert=False)
+    return pgnreader.parse_pagan_file(
+        ('%s%spgn%s' % (PACKAGE_DIR, os.sep, os.sep)) + shield + '.pgn',
+        hashcode,
+        sym=False,
+        invert=False)
 
 
 def create_weapon_layer(weapon, hashcode, isSecond=False):
     """Creates the layer for weapons."""
-    return pgnreader.parse_pagan_file(('%s%spgn%s' % (PACKAGE_DIR, os.sep, os.sep)) + weapon + '.pgn', hashcode, sym=False, invert=isSecond)
+    return pgnreader.parse_pagan_file(
+        ('%s%spgn%s' % (PACKAGE_DIR, os.sep, os.sep)) + weapon + '.pgn',
+        hashcode,
+        sym=False,
+        invert=isSecond)
 
 
 def scale_pixels(color, layer):
@@ -225,19 +245,17 @@ def setup_pixelmap(hashcode):
     # Grinds for the aspect.
     aspect = hashgrinder.grind_hash_for_aspect(hashcode)
 
-
     #Determine weapons of the avatar.
     weapons = hashgrinder.grind_hash_for_weapon(hashcode)
 
-
-
     if DEBUG:
-        print ("Current aspect: %r" % aspect)
-        print ("Current weapons: %r" % weapons)
+        print("Current aspect: %r" % aspect)
+        print("Current weapons: %r" % weapons)
 
     # There is just one body template. The optional pixels need to be mirrored so
     # the body layout will be symmetric to avoid uncanny looks.
-    layer_body = pgnreader.parse_pagan_file(FILE_BODY, hashcode, invert=False, sym=True)
+    layer_body = pgnreader.parse_pagan_file(
+        FILE_BODY, hashcode, invert=False, sym=True)
 
     layer_hair = create_hair_layer(aspect, hashcode)
     layer_boots = create_boots_layer(aspect, hashcode)
@@ -284,13 +302,13 @@ def generate_by_hash(hashcode):
     hash String. Acts as the main accessor to pagan."""
     img = Image.new(IMAGE_MODE, IMAGE_SIZE, BACKGROUND_COLOR)
     if len(hashcode) < 32:
-        print ("hashcode must have lenght >= 32, %s" % hashcode)
+        print("hashcode must have lenght >= 32, %s" % hashcode)
         raise FalseHashError
 
     allowed = "0123456789abcdef"
     hashcheck = [c in allowed for c in hashcode]
     if False in hashcheck:
-        print ("hashcode has not allowed structure %s" % hashcode)
+        print("hashcode has not allowed structure %s" % hashcode)
         raise FalseHashError
 
     pixelmap = setup_pixelmap(hashcode)
